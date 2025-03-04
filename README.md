@@ -2,7 +2,7 @@
 
 Volumetric clouds & new atmospheres for JNSQ
 
-![image](https://i.imgur.com/GXr1qkP.png)
+![image](https://i.imgur.com/NMSjWQn.png)
 
 
 =====================
