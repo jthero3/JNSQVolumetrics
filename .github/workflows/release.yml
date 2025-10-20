@@ -1,0 +1,67 @@
+# Release workflow: packages repo and creates a tag based on version number when pushed to main
+
+name: Release
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  VERSION: "3.1.2"
+  ZIP_NAME: "JNSQVolumetrics"
+  SD_VERSION: "3842"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Package repository
+        run: |
+          zip -r ${{ env.ZIP_NAME }}_${{ env.VERSION }}.zip . -x '*.git*' -x '*.github*'
+
+      - name: Create and push tag
+        run: |
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
+          files: |
+            ${{ env.ZIP_NAME }}_${{ env.VERSION }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download release zip
+        run: |
+          wget https://github.com/${{ github.repository }}/releases/download/${{ env.VERSION }}/${{ env.ZIP_NAME }}_${{ env.VERSION }}.zip
+
+      - name: Login to Spacedock
+        run: |
+          curl -F username=jthero3 -F password=${{ secrets.SPACEDOCK }} -c ./cookies "https://spacedock.info/api/login"
+
+      - name: Update Mod
+        run: |
+          curl -b ./cookies \
+          -F "version=${{ env.VERSION }}" \
+          -F "changelog=Quick Fix" \
+          -F "game-version=1.12.5" \
+          -F "notify-followers=no" \
+          -F "zipball=@${{ env.ZIP_NAME }}_${{ env.VERSION }}.zip" \
+          "https://spacedock.info/api/mod/${{ env.SD_VERSION }}/update"
