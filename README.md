@@ -7,7 +7,7 @@ Volumetric clouds & new atmospheres for JNSQ
 
 # DEPENDENCIES
 
-- EVE Redux Release 4 & Scatterer
+- EVE Redux Release 5 & Scatterer
 - ModuleManager
 - JNSQ 
 
