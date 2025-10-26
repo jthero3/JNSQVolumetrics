@@ -21,3 +21,6 @@ Volumetric clouds & new atmospheres for JNSQ
 - [Huygen Cloud Configs](https://github.com/atmosphericbeats/atmosphericbeats_eveconfig_ksrss)
 - [Aurora textures](https://www.patreon.com/ballisticfox)
 
+# License
+
+Configs are CC-NC-ND, textures are released under All-Rights-Reserved.
